@@ -1,0 +1,9 @@
+# Vscode
+.vscode
+
+#.env
+.env
+
+#main
+main*
+!*.go
