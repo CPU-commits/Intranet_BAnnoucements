@@ -1,0 +1,211 @@
+basePath: /api/annoucements
+consumes:
+- application/json
+definitions:
+  forms.AnnoucementForm:
+    properties:
+      annoucement:
+        minLength: 1
+        type: string
+      files:
+        items:
+          type: string
+        type: array
+    required:
+    - annoucement
+    type: object
+  models.AnnoucementWLookUp:
+    description: Annoucement of home
+    properties:
+      _id:
+        type: string
+      annoucement:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/models.File'
+        type: array
+        x-omitempty: true
+      update_date:
+        type: string
+      upload_date:
+        type: string
+      user:
+        $ref: '#/definitions/models.SimpleUser'
+    type: object
+  models.File:
+    description: File attached to annoucement
+    properties:
+      _id:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  models.SimpleUser:
+    description: User account information . Global model for all users
+    properties:
+      _id:
+        type: string
+      first_lastname:
+        type: string
+      name:
+        type: string
+      rut:
+        type: string
+      second_lastname:
+        type: string
+    type: object
+  res.Response:
+    properties:
+      body:
+        additionalProperties: true
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API Server For home annoucements in Intranet
+  license:
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Annoucement API
+  version: "1.0"
+paths:
+  /delete_annoucement/{idAnnoucement}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a annoucement in home, ROLS=[Director,Directive]
+      parameters:
+      - description: MongoID Annoucement
+        in: path
+        name: idAnnoucement
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: idAnnoucement Must be a MongoID
+          schema:
+            $ref: '#/definitions/res.Response'
+        "503":
+          description: Service Unavailable - NATS || DB Service Unavailable
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Delete annoucement
+      tags:
+      - annoucements
+  /get_annoucements:
+    get:
+      consumes:
+      - application/json
+      description: Get genneral annoucements
+      parameters:
+      - default: 0
+        description: int valid >= 0
+        in: query
+        name: skip
+        type: integer
+      - default: 20
+        description: int valid >= 0
+        in: query
+        maximum: 20
+        name: limit
+        type: integer
+      - default: false
+        description: total length data
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                body:
+                  items:
+                    $ref: '#/definitions/models.AnnoucementWLookUp'
+                  type: array
+              type: object
+        "400":
+          description: Limit must be a int
+          schema:
+            $ref: '#/definitions/res.Response'
+        "503":
+          description: Service Unavailable - NATS || Mongo Service Unavailable
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Get annoucements of home
+      tags:
+      - annoucements
+  /upload_annoucement:
+    post:
+      consumes:
+      - application/json
+      description: Upload a annoucement in home, ROLS=[Director,Directive]
+      parameters:
+      - description: Add annoucement - Files must be MongoId[]
+        in: body
+        name: annoucement
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AnnoucementForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+        "400":
+          description: Bad request - Bad body
+          schema:
+            $ref: '#/definitions/res.Response'
+        "409":
+          description: Todos los archivos a publicar deben ser públicos
+          schema:
+            $ref: '#/definitions/res.Response'
+        "500":
+          description: Server Internal Error - Maybe a bad response of NATS
+          schema:
+            $ref: '#/definitions/res.Response'
+        "503":
+          description: Service Unavailable - NATS || DB Service Unavailable
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: Upload annoucement in home
+      tags:
+      - annoucements
+produces:
+- application/json
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    description: BearerJWTToken in Authorization Header
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: Unique tag - Annoucements of home
+  name: annoucements

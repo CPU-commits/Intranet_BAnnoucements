@@ -28,13 +28,15 @@ type Annoucement struct {
 	UpdateDate  primitive.DateTime   `json:"update_date" bson:"update_date"`
 }
 
+// Annoucement model info
+// @Description Annoucement of home
 type AnnoucementWLookUp struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
 	User        SimpleUser         `json:"user" bson:"user"`
-	Files       []File             `json:"files" bson:"files,omitempty"`
+	Files       []File             `json:"files,omitempty" bson:"files,omitempty" extensions:"x-omitempty"`
 	Annoucement string             `json:"annoucement" bson:"annoucement"`
-	UploadDate  primitive.DateTime `json:"upload_date" bson:"upload_date"`
-	UpdateDate  primitive.DateTime `json:"update_date" bson:"update_date"`
+	UploadDate  primitive.DateTime `json:"upload_date" bson:"upload_date" swaggertype:"string"`
+	UpdateDate  primitive.DateTime `json:"update_date" bson:"update_date" swaggertype:"string"`
 }
 
 type AnnoucementModel struct {

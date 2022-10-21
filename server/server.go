@@ -6,11 +6,14 @@ import (
 	"net/http"
 
 	"github.com/CPU-commits/Intranet_BAnnoucements/controllers"
+	"github.com/CPU-commits/Intranet_BAnnoucements/docs"
 	"github.com/CPU-commits/Intranet_BAnnoucements/middlewares"
 	"github.com/CPU-commits/Intranet_BAnnoucements/models"
 	"github.com/CPU-commits/Intranet_BAnnoucements/res"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
 func Init() {
@@ -25,6 +28,10 @@ func Init() {
 			Message: "Server Internal Error",
 		})
 	}))
+	// Docs
+	docs.SwaggerInfo.BasePath = "/api/annoucements"
+	docs.SwaggerInfo.Version = "v1"
+	docs.SwaggerInfo.Host = "localhost:8080"
 	// CORS
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
@@ -58,6 +65,8 @@ func Init() {
 			annoucementsController.DeleteAnnoucement,
 		)
 	}
+	// Route docs
+	router.GET("/api/annoucements/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// No route
 	router.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(404, res.Response{
