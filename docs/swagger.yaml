@@ -54,6 +54,7 @@ definitions:
         type: string
       rut:
         type: string
+        x-omitempty: true
       second_lastname:
         type: string
     type: object

@@ -283,7 +283,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "rut": {
-                    "type": "string"
+                    "type": "string",
+                    "x-omitempty": true
                 },
                 "second_lastname": {
                     "type": "string"
