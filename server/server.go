@@ -4,21 +4,39 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/CPU-commits/Intranet_BAnnoucements/controllers"
 	"github.com/CPU-commits/Intranet_BAnnoucements/docs"
 	"github.com/CPU-commits/Intranet_BAnnoucements/middlewares"
 	"github.com/CPU-commits/Intranet_BAnnoucements/models"
 	"github.com/CPU-commits/Intranet_BAnnoucements/res"
+	"github.com/CPU-commits/Intranet_BAnnoucements/settings"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/secure"
+	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+	"go.uber.org/zap"
 )
+
+var settingsData = settings.GetSettings()
 
 func Init() {
 	router := gin.New()
-	router.Use(gin.Logger())
+	// Zap logger
+	logger, err := zap.NewProduction()
+	if err != nil {
+		panic(err)
+	}
+	router.Use(ginzap.GinzapWithConfig(logger, &ginzap.Config{
+		TimeFormat: time.RFC3339,
+		UTC:        true,
+		SkipPaths:  []string{"/api/annoucements/swagger"},
+	}))
+	router.Use(ginzap.RecoveryWithZap(logger, true))
+
 	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
 			c.String(http.StatusInternalServerError, fmt.Sprintf("Server Internal Error: %s", err))
@@ -28,13 +46,36 @@ func Init() {
 			Message: "Server Internal Error",
 		})
 	}))
+
+	router.GET("/api/annoucements/ping", func(ctx *gin.Context) {
+		ctx.String(200, "pong"+fmt.Sprint(time.Now().Unix()))
+	})
 	// Docs
 	docs.SwaggerInfo.BasePath = "/api/annoucements"
 	docs.SwaggerInfo.Version = "v1"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	// CORS
 	router.Use(cors.New(cors.Config{
-		AllowAllOrigins: true,
+		AllowOrigins:     []string{settingsData.CLIENT_URL},
+		AllowMethods:     []string{"GET", "OPTIONS", "PUT", "DELETE", "POST"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+	// Secure
+	sslUrl := "ssl." + settingsData.CLIENT_URL
+	router.Use(secure.New(secure.Config{
+		AllowedHosts:         []string{settingsData.CLIENT_URL, sslUrl},
+		SSLHost:              sslUrl,
+		STSSeconds:           315360000,
+		STSIncludeSubdomains: true,
+		FrameDeny:            true,
+		ContentTypeNosniff:   true,
+		BrowserXssFilter:     true,
+		IENoOpen:             true,
+		ReferrerPolicy:       "strict-origin-when-cross-origin",
+		SSLProxyHeaders: map[string]string{
+			"X-Fowarded-Proto": "https",
+		},
 	}))
 	// Routes
 	defaultRoles := []string{
