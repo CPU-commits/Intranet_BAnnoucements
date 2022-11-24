@@ -25,6 +25,8 @@ var settingsData = settings.GetSettings()
 
 func Init() {
 	router := gin.New()
+	// Proxies
+	router.SetTrustedProxies([]string{"localhost"})
 	// Zap logger
 	logger, err := zap.NewProduction()
 	if err != nil {
@@ -46,25 +48,24 @@ func Init() {
 			Message: "Server Internal Error",
 		})
 	}))
-
-	router.GET("/api/annoucements/ping", func(ctx *gin.Context) {
-		ctx.String(200, "pong"+fmt.Sprint(time.Now().Unix()))
-	})
 	// Docs
 	docs.SwaggerInfo.BasePath = "/api/annoucements"
 	docs.SwaggerInfo.Version = "v1"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	// CORS
+	httpOrigin := "http://" + settingsData.CLIENT_URL
+	httpsOrigin := "https://" + settingsData.CLIENT_URL
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{settingsData.CLIENT_URL},
+		AllowOrigins:     []string{httpOrigin, httpsOrigin},
 		AllowMethods:     []string{"GET", "OPTIONS", "PUT", "DELETE", "POST"},
 		AllowCredentials: true,
+		AllowWebSockets:  false,
 		MaxAge:           12 * time.Hour,
 	}))
 	// Secure
 	sslUrl := "ssl." + settingsData.CLIENT_URL
 	router.Use(secure.New(secure.Config{
-		AllowedHosts:         []string{settingsData.CLIENT_URL, sslUrl},
+		//AllowedHosts:         []string{settingsData.CLIENT_URL, sslUrl},
 		SSLHost:              sslUrl,
 		STSSeconds:           315360000,
 		STSIncludeSubdomains: true,

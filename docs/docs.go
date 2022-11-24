@@ -65,6 +65,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/res.Response"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized role",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
                     "503": {
                         "description": "Service Unavailable - NATS || DB Service Unavailable",
                         "schema": {
@@ -123,10 +129,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "body": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/models.AnnoucementWLookUp"
-                                            }
+                                            "$ref": "#/definitions/smaps.AnnoucementsMap"
                                         }
                                     }
                                 }
@@ -135,6 +138,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Limit must be a int",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/res.Response"
                         }
@@ -173,14 +182,20 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/res.Response"
                         }
                     },
                     "400": {
                         "description": "Bad request - Bad body",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized role",
                         "schema": {
                             "$ref": "#/definitions/res.Response"
                         }
@@ -216,13 +231,17 @@ const docTemplate = `{
             "properties": {
                 "annoucement": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "example": "This is a annoucement!"
                 },
                 "files": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "6376c8283cc695e19d785b08"
+                    ]
                 }
             }
         },
@@ -231,10 +250,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "6376c8283cc695e19d785b08"
                 },
                 "annoucement": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "This is a annoucement!"
                 },
                 "files": {
                     "type": "array",
@@ -244,10 +265,12 @@ const docTemplate = `{
                     "x-omitempty": true
                 },
                 "update_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2022-09-21T20:10:23.309+00:00"
                 },
                 "upload_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2022-09-21T20:10:23.309+00:00"
                 },
                 "user": {
                     "$ref": "#/definitions/models.SimpleUser"
@@ -259,13 +282,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "6376c8283cc695e19d785b08"
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Title"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "private"
                 }
             }
         },
@@ -274,20 +300,25 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "6376c8283cc695e19d785b08"
                 },
                 "first_lastname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Firstlastname"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Name"
                 },
                 "rut": {
                     "type": "string",
-                    "x-omitempty": true
+                    "x-omitempty": true,
+                    "example": "12345678-0"
                 },
                 "second_lastname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Secondlastname"
                 }
             }
         },
@@ -296,13 +327,30 @@ const docTemplate = `{
             "properties": {
                 "body": {
                     "type": "object",
-                    "additionalProperties": true
+                    "additionalProperties": true,
+                    "x-omitempty": true
                 },
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "x-omitempty": true,
+                    "example": "Error message"
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "smaps.AnnoucementsMap": {
+            "type": "object",
+            "properties": {
+                "annoucements": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AnnoucementWLookUp"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }

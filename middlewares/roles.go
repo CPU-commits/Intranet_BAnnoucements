@@ -19,7 +19,7 @@ func RolesMiddleware(roles []string) gin.HandlerFunc {
 		}
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, &res.Response{
 			Success: false,
-			Message: "Unauthorized",
+			Message: "Unauthorized role",
 		})
 	}
 }

@@ -5,9 +5,12 @@ definitions:
   forms.AnnoucementForm:
     properties:
       annoucement:
+        example: This is a annoucement!
         minLength: 1
         type: string
       files:
+        example:
+        - 6376c8283cc695e19d785b08
         items:
           type: string
         type: array
@@ -18,8 +21,10 @@ definitions:
     description: Annoucement of home
     properties:
       _id:
+        example: 6376c8283cc695e19d785b08
         type: string
       annoucement:
+        example: This is a annoucement!
         type: string
       files:
         items:
@@ -27,8 +32,10 @@ definitions:
         type: array
         x-omitempty: true
       update_date:
+        example: "2022-09-21T20:10:23.309+00:00"
         type: string
       upload_date:
+        example: "2022-09-21T20:10:23.309+00:00"
         type: string
       user:
         $ref: '#/definitions/models.SimpleUser'
@@ -37,25 +44,33 @@ definitions:
     description: File attached to annoucement
     properties:
       _id:
+        example: 6376c8283cc695e19d785b08
         type: string
       title:
+        example: Title
         type: string
       type:
+        example: private
         type: string
     type: object
   models.SimpleUser:
     description: User account information . Global model for all users
     properties:
       _id:
+        example: 6376c8283cc695e19d785b08
         type: string
       first_lastname:
+        example: Firstlastname
         type: string
       name:
+        example: Name
         type: string
       rut:
+        example: 12345678-0
         type: string
         x-omitempty: true
       second_lastname:
+        example: Secondlastname
         type: string
     type: object
   res.Response:
@@ -63,10 +78,22 @@ definitions:
       body:
         additionalProperties: true
         type: object
+        x-omitempty: true
       message:
+        example: Error message
         type: string
+        x-omitempty: true
       success:
         type: boolean
+    type: object
+  smaps.AnnoucementsMap:
+    properties:
+      annoucements:
+        items:
+          $ref: '#/definitions/models.AnnoucementWLookUp'
+        type: array
+      total:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -101,6 +128,10 @@ paths:
             $ref: '#/definitions/res.Response'
         "400":
           description: idAnnoucement Must be a MongoID
+          schema:
+            $ref: '#/definitions/res.Response'
+        "401":
+          description: Unauthorized role
           schema:
             $ref: '#/definitions/res.Response'
         "503":
@@ -142,12 +173,14 @@ paths:
             - $ref: '#/definitions/res.Response'
             - properties:
                 body:
-                  items:
-                    $ref: '#/definitions/models.AnnoucementWLookUp'
-                  type: array
+                  $ref: '#/definitions/smaps.AnnoucementsMap'
               type: object
         "400":
           description: Limit must be a int
+          schema:
+            $ref: '#/definitions/res.Response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/res.Response'
         "503":
@@ -172,12 +205,16 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/res.Response'
         "400":
           description: Bad request - Bad body
+          schema:
+            $ref: '#/definitions/res.Response'
+        "401":
+          description: Unauthorized role
           schema:
             $ref: '#/definitions/res.Response'
         "409":
