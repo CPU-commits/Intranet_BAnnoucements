@@ -47,3 +47,4 @@ Exposed port (in both Dockerfiles): `8080`
 | `AWS_BUCKET`          | AWS Bucket                  | **Required** |
 | `AWS_REGION`          | AWS Region                  | **Required** |
 | `CLIENT_URL`          | Public URL Client           | **Required** |
+| `NODE_ENV`            | Node ENV                    | **Required** |
