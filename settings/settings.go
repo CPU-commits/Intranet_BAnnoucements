@@ -22,6 +22,7 @@ type settings struct {
 	AWS_BUCKET          string
 	AWS_REGION          string
 	CLIENT_URL          string
+	NODE_ENV            string
 }
 
 func newSettings() *settings {
@@ -36,6 +37,7 @@ func newSettings() *settings {
 		AWS_BUCKET:          os.Getenv("AWS_BUCKET"),
 		AWS_REGION:          os.Getenv("AWS_REGION"),
 		CLIENT_URL:          os.Getenv("CLIENT_URL"),
+		NODE_ENV:            os.Getenv("NODE_ENV"),
 	}
 }
 

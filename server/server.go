@@ -64,8 +64,7 @@ func Init() {
 	}))
 	// Secure
 	sslUrl := "ssl." + settingsData.CLIENT_URL
-	router.Use(secure.New(secure.Config{
-		//AllowedHosts:         []string{settingsData.CLIENT_URL, sslUrl},
+	secureConfig := secure.Config{
 		SSLHost:              sslUrl,
 		STSSeconds:           315360000,
 		STSIncludeSubdomains: true,
@@ -77,7 +76,14 @@ func Init() {
 		SSLProxyHeaders: map[string]string{
 			"X-Fowarded-Proto": "https",
 		},
-	}))
+	}
+	if settingsData.NODE_ENV == "prod" {
+		secureConfig.AllowedHosts = []string{
+			settingsData.CLIENT_URL,
+			sslUrl,
+		}
+	}
+	router.Use(secure.New(secureConfig))
 	// Routes
 	defaultRoles := []string{
 		models.DIRECTIVE,
