@@ -3,6 +3,7 @@ module github.com/CPU-commits/Intranet_BAnnoucements
 go 1.19
 
 require (
+	github.com/JGLTechnologies/gin-rate-limit v1.5.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/secure v0.0.1
@@ -19,7 +20,6 @@ require (
 )
 
 require (
-	github.com/JGLTechnologies/gin-rate-limit v1.5.2 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/astaxie/beego v1.12.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect

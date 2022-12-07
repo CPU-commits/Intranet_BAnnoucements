@@ -72,6 +72,7 @@ func Init() {
 		AllowOrigins:     []string{httpOrigin, httpsOrigin},
 		AllowMethods:     []string{"GET", "OPTIONS", "PUT", "DELETE", "POST"},
 		AllowCredentials: true,
+		AllowHeaders:     []string{"*"},
 		AllowWebSockets:  false,
 		MaxAge:           12 * time.Hour,
 	}))
@@ -90,12 +91,12 @@ func Init() {
 			"X-Fowarded-Proto": "https",
 		},
 	}
-	if settingsData.NODE_ENV == "prod" {
+	/*if settingsData.NODE_ENV == "prod" {
 		secureConfig.AllowedHosts = []string{
 			settingsData.CLIENT_URL,
 			sslUrl,
 		}
-	}
+	}*/
 	router.Use(secure.New(secureConfig))
 	// Security Headers
 	securityHeaders.Init()
