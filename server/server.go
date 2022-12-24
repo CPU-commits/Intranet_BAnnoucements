@@ -12,16 +12,24 @@ import (
 	"github.com/CPU-commits/Intranet_BAnnoucements/models"
 	"github.com/CPU-commits/Intranet_BAnnoucements/res"
 	"github.com/CPU-commits/Intranet_BAnnoucements/settings"
+
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/secure"
+
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+
 	securityHeaders "github.com/gosecguy/beego-security-headers"
-	swaggerFiles "github.com/swaggo/files"     // swagger embed files
-	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+
+	swaggerFiles "github.com/swaggo/files"
+
+	// swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
+
+// gin-swagger middleware
 
 func keyFunc(c *gin.Context) string {
 	return c.ClientIP()
@@ -66,16 +74,20 @@ func Init() {
 	docs.SwaggerInfo.Version = "v1"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	// CORS
-	httpOrigin := "http://" + settingsData.CLIENT_URL
-	httpsOrigin := "https://" + settingsData.CLIENT_URL
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{httpOrigin, httpsOrigin},
-		AllowMethods:     []string{"GET", "OPTIONS", "PUT", "DELETE", "POST"},
-		AllowCredentials: true,
-		AllowHeaders:     []string{"*"},
-		AllowWebSockets:  false,
-		MaxAge:           12 * time.Hour,
-	}))
+	if settingsData.NODE_ENV == "prod" {
+		httpOrigin := "http://" + settingsData.CLIENT_URL
+		httpsOrigin := "https://" + settingsData.CLIENT_URL
+		router.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{httpOrigin, httpsOrigin},
+			AllowMethods:     []string{"GET", "OPTIONS", "PUT", "DELETE", "POST"},
+			AllowCredentials: true,
+			AllowHeaders:     []string{"*"},
+			AllowWebSockets:  false,
+			MaxAge:           12 * time.Hour,
+		}))
+	} else {
+		router.Use(cors.Default())
+	}
 	// Secure
 	sslUrl := "ssl." + settingsData.CLIENT_URL
 	secureConfig := secure.Config{

@@ -1,6 +1,8 @@
 package main
 
-import "github.com/CPU-commits/Intranet_BAnnoucements/server"
+import (
+	"github.com/CPU-commits/Intranet_BAnnoucements/server"
+)
 
 // @title          Annoucement API
 // @version        1.0

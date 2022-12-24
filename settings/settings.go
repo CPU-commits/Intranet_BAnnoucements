@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -43,7 +42,7 @@ func newSettings() *settings {
 }
 
 func init() {
-	if os.Getenv("prod") != "" {
+	if os.Getenv("NODE_ENV") != "prod" {
 		if err := godotenv.Load(); err != nil {
 			log.Fatalf("No .env file found")
 		}
@@ -51,7 +50,6 @@ func init() {
 }
 
 func GetSettings() *settings {
-	fmt.Println(newSettings())
 	if singleSettingsInstace == nil {
 		lock.Lock()
 		defer lock.Unlock()
