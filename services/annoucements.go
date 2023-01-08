@@ -117,7 +117,6 @@ func (a *AnnoucementService) DeleteAnnoucement(idAnnoucement string) *ErrorRes {
 	// Delete
 	err = annoucementModel.DeleteAnnoucement(idObjAnnoucement)
 	if err != nil {
-		fmt.Printf("err.Error(): %v\n", err.Error())
 		return &ErrorRes{
 			StatusCode: http.StatusServiceUnavailable,
 			Err:        err,

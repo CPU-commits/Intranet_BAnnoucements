@@ -99,8 +99,5 @@ func NewNats() *NatsClient {
 	natsClient := &NatsClient{
 		conn: conn,
 	}
-	natsClient.Subscribe("help", func(m *nats.Msg) {
-		fmt.Printf("Received a message: %s\n", string(m.Data))
-	})
 	return natsClient
 }
