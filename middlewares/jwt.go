@@ -16,7 +16,6 @@ func JWTMiddleware() gin.HandlerFunc {
 				Success: false,
 				Message: err.Error(),
 			})
-
 			return
 		}
 		if !token.Valid {
