@@ -22,8 +22,6 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 
-	securityHeaders "github.com/gosecguy/beego-security-headers"
-
 	swaggerFiles "github.com/swaggo/files"
 
 	// swagger embed files
@@ -131,8 +129,6 @@ func Init() {
 		}
 	}*/
 	router.Use(secure.New(secureConfig))
-	// Security Headers
-	securityHeaders.Init()
 	// Rate limit
 	store := ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
 		Rate:  time.Second,
