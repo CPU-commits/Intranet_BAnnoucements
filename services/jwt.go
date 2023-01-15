@@ -1,13 +1,14 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/CPU-commits/Intranet_BAnnoucements/settings"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	jwt "github.com/golang-jwt/jwt/v4"
 )
 
 var jwtKey = settings.GetSettings().JWT_SECRET_KEY
@@ -35,6 +36,9 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 		}
 		return []byte(jwtKey), nil
 	})
+	if !token.Valid {
+		return nil, errors.New("Unauthorized")
+	}
 	if err != nil {
 		return nil, err
 	}

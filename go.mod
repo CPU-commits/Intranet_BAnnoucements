@@ -4,11 +4,11 @@ go 1.19
 
 require (
 	github.com/JGLTechnologies/gin-rate-limit v1.5.2
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/secure v0.0.1
 	github.com/gin-contrib/zap v0.1.0
 	github.com/gin-gonic/gin v1.8.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/joho/godotenv v1.4.0
 	github.com/nats-io/nats.go v1.22.1
 	github.com/swaggo/files v1.0.0
