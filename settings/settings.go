@@ -1,8 +1,10 @@
 package settings
 
 import (
+	"errors"
 	"log"
 	"os"
+	"strconv"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -23,9 +25,15 @@ type settings struct {
 	AWS_REGION          string
 	CLIENT_URL          string
 	NODE_ENV            string
+	MONGO_PORT          int
 }
 
 func newSettings() *settings {
+	mongoPort, err := strconv.Atoi(os.Getenv("MONGO_PORT"))
+	if err != nil {
+		panic(errors.New("MONGO_PORT Must be a int"))
+	}
+
 	return &settings{
 		JWT_SECRET_KEY:      os.Getenv("JWT_SECRET_KEY"),
 		MONGO_DB:            os.Getenv("MONGO_DB"),
@@ -38,6 +46,7 @@ func newSettings() *settings {
 		AWS_REGION:          os.Getenv("AWS_REGION"),
 		CLIENT_URL:          os.Getenv("CLIENT_URL"),
 		NODE_ENV:            os.Getenv("NODE_ENV"),
+		MONGO_PORT:          mongoPort,
 	}
 }
 
